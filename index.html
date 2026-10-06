@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Booking Reservation System</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f2f6fa;
+        color: #222;
+    }
+
+    header {
+        background: #1565c0;
+        color: white;
+        padding: 22px;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 30px;
+    }
+
+    header p {
+        margin: 8px 0 0;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1000px;
+        margin: 30px auto;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 25px;
+    }
+
+    h2 {
+        color: #1565c0;
+        margin-top: 0;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 7px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #bbb;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+
+    .full {
+        grid-column: span 2;
+    }
+
+    button {
+        background: #1565c0;
+        color: white;
+        border: none;
+        padding: 13px 25px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #0d47a1;
+    }
+
+    .cars {
+        display: none;
+        margin-top: 20px;
+    }
+
+    .car {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 18px;
+        margin: 12px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fafafa;
+    }
+
+    .car h3 {
+        margin: 0 0 8px;
+        color: #1565c0;
+    }
+
+    .price {
+        font-weight: bold;
+        color: #198754;
+        font-size: 18px;
+    }
+
+    #confirmation {
+        display: none;
+        background: #e8f5e9;
+        border-left: 5px solid #2e7d32;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    footer {
+        background: #1565c0;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        margin-top: 40px;
+    }
+
+    @media(max-width:700px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .full {
+            grid-column: span 1;
+        }
+
+        .car {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🚗 Car Booking Reservation System</h1>
+    <p>Cloud-Based SaaS Application</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>🔍 Search for Cabs</h2>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Booking Type</label>
+                <select id="bookingType" onchange="updateFields()">
+                    <option value="rental">Rental</option>
+                    <option value="outstation">Out Station</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Package Type</label>
+                <select id="package">
+                    <option value="4 Hours">4 Hours</option>
+                    <option value="8 Hours">8 Hours</option>
+                    <option value="12 Hours">12 Hours</option>
+                    <option value="1 Day">1 Day</option>
+                    <option value="2 Days">2 Days</option>
+                    <option value="3 Days">3 Days</option>
+                </select>
+            </div>
+
+            <div>
+                <label>From</label>
+                <input type="text" id="from" placeholder="Enter pickup location">
+            </div>
+
+            <div>
+                <label>To</label>
+                <input type="text" id="to" placeholder="Enter destination">
+            </div>
+
+            <div>
+                <label>Pickup Date</label>
+                <input type="date" id="date">
+            </div>
+
+            <div>
+                <label>Pickup Time</label>
+                <input type="time" id="time">
+            </div>
+
+            <div>
+                <label>Number of Passengers</label>
+                <input type="number" id="passengers" min="1" max="10" value="1">
+            </div>
+
+            <div>
+                <label>Car Type</label>
+                <select id="carType">
+                    <option value="All">All Cars</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="Luxury">Luxury</option>
+                </select>
+            </div>
+
+            <div class="full">
+                <button onclick="searchCars()">🔍 Search Cabs</button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="card cars" id="cars">
+
+        <h2>🚘 Available Cars</h2>
+
+        <div class="car">
+            <div>
+                <h3>Swift Dzire - Sedan</h3>
+                <p>👥 4 Passengers | ❄ AC | ⭐ 4.5</p>
+                <p class="price">₹1,500</p>
+            </div>
+            <button onclick="bookCar('Swift Dzire',1500)">
+                Book Now
+            </button>
+        </div>
+
+        <div class="car">
+            <div>
+                <h3>Hyundai Creta - SUV</h3>
+                <p>👥 5 Passengers | ❄ AC | ⭐ 4.7</p>
+                <p class="price">₹2,200</p>
+            </div>
+            <button onclick="bookCar('Hyundai Creta',2200)">
+                Book Now
+            </button>
+        </div>
+
+        <div class="car">
+            <div>
+                <h3>Maruti Baleno - Hatchback</h3>
+                <p>👥 5 Passengers | ❄ AC | ⭐ 4.3</p>
+                <p class="price">₹1,300</p>
+            </div>
+            <button onclick="bookCar('Maruti Baleno',1300)">
+                Book Now
+            </button>
+        </div>
+
+        <div class="car">
+            <div>
+                <h3>Toyota Camry - Luxury</h3>
+                <p>👥 5 Passengers | ❄ AC | ⭐ 4.9</p>
+                <p class="price">₹4,500</p>
+            </div>
+            <button onclick="bookCar('Toyota Camry',4500)">
+                Book Now
+            </button>
+        </div>
+
+    </div>
+
+
+    <div class="card" id="confirmation">
+
+        <h2>✅ Booking Confirmation</h2>
+
+        <p><b>Booking ID:</b> <span id="bookingId"></span></p>
+        <p><b>Car:</b> <span id="confirmCar"></span></p>
+        <p><b>From:</b> <span id="confirmFrom"></span></p>
+        <p><b>To:</b> <span id="confirmTo"></span></p>
+        <p><b>Booking Type:</b> <span id="confirmType"></span></p>
+        <p><b>Package:</b> <span id="confirmPackage"></span></p>
+        <p><b>Date:</b> <span id="confirmDate"></span></p>
+        <p><b>Time:</b> <span id="confirmTime"></span></p>
+        <p><b>Passengers:</b> <span id="confirmPassengers"></span></p>
+        <p><b>Total Fare:</b> ₹<span id="confirmPrice"></span></p>
+
+        <button onclick="window.print()">🖨 Print Booking</button>
+
+    </div>
+
+</div>
+
+
+<footer>
+    Car Booking Reservation System | SaaS Cloud Application | GitHub Pages
+</footer>
+
+
+<script>
+
+function updateFields() {
+
+    let type = document.getElementById("bookingType").value;
+    let packageBox = document.getElementById("package");
+
+    packageBox.innerHTML = "";
+
+    if(type === "rental") {
+
+        packageBox.innerHTML +=
+        '<option>4 Hours</option>';
+
+        packageBox.innerHTML +=
+        '<option>8 Hours</option>';
+
+        packageBox.innerHTML +=
+        '<option>12 Hours</option>';
+
+        packageBox.innerHTML +=
+        '<option>1 Day</option>';
+
+    } 
+    else {
+
+        packageBox.innerHTML +=
+        '<option>1 Day</option>';
+
+        packageBox.innerHTML +=
+        '<option>2 Days</option>';
+
+        packageBox.innerHTML +=
+        '<option>3 Days</option>';
+
+        packageBox.innerHTML +=
+        '<option>5 Days</option>';
+
+        packageBox.innerHTML +=
+        '<option>7 Days</option>';
+    }
+}
+
+
+function searchCars() {
+
+    let from = document.getElementById("from").value;
+    let to = document.getElementById("to").value;
+    let date = document.getElementById("date").value;
+
+    if(from === "" || to === "" || date === "") {
+
+        alert("Please enter From, To and Pickup Date.");
+
+        return;
+    }
+
+    document.getElementById("cars").style.display = "block";
+
+    window.scrollTo({
+        top: document.getElementById("cars").offsetTop,
+        behavior: "smooth"
+    });
+}
+
+
+function bookCar(car, price) {
+
+    let from =
+    document.getElementById("from").value;
+
+    let to =
+    document.getElementById("to").value;
+
+    let type =
+    document.getElementById("bookingType").value;
+
+    let packageType =
+    document.getElementById("package").value;
+
+    let date =
+    document.getElementById("date").value;
+
+    let time =
+    document.getElementById("time").value;
+
+    let passengers =
+    document.getElementById("passengers").value;
+
+
+    let bookingId =
+    "CAB" + Math.floor(100000 + Math.random() * 900000);
+
+
+    document.getElementById("bookingId").innerText =
+    bookingId;
+
+    document.getElementById("confirmCar").innerText =
+    car;
+
+    document.getElementById("confirmFrom").innerText =
+    from;
+
+    document.getElementById("confirmTo").innerText =
+    to;
+
+    document.getElementById("confirmType").innerText =
+    type === "rental" ? "Rental" : "Out Station";
+
+    document.getElementById("confirmPackage").innerText =
+    packageType;
+
+    document.getElementById("confirmDate").innerText =
+    date;
+
+    document.getElementById("confirmTime").innerText =
+    time || "Not specified";
+
+    document.getElementById("confirmPassengers").innerText =
+    passengers;
+
+    document.getElementById("confirmPrice").innerText =
+    price;
+
+
+    document.getElementById("confirmation").style.display =
+    "block";
+
+
+    window.scrollTo({
+        top: document.getElementById("confirmation").offsetTop,
+        behavior: "smooth"
+    });
+}
+
+</script>
+
+</body>
+</html>
